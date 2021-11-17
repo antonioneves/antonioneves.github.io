@@ -1,16 +1,27 @@
 /*!
-* Start Bootstrap - Freelancer v7.0.5 (https://startbootstrap.com/theme/freelancer)
-* Copyright 2013-2021 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-freelancer/blob/master/LICENSE)
-*/
-//
+    * Start Bootstrap - Freelancer v7.0.5 (https://startbootstrap.com/theme/freelancer)
+    * Copyright 2013-2021 Start Bootstrap
+    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-freelancer/blob/master/LICENSE)
+    *///
 // Scripts
-// 
+//
+const mainLink = document.getElementById("main-link");
+mainLink.style.display = "none";
+const scrollLimit = 550;
+const scrollRange = 100;
 
-window.addEventListener('DOMContentLoaded', event => {
+let intersected = (window.location.hash === '#skils');
+let barIntersected = (window.location.hash === '#experience');
 
+let options = {
+    root: document.querySelector('#scrollArea'),
+    rootMargin: '0px',
+    threshold: 1.0
+}
+
+window.addEventListener('DOMContentLoaded', () => {
     // Navbar shrink function
-    var navbarShrink = function () {
+    var navbarShrink = () => {
         const navbarCollapsible = document.body.querySelector('#mainNav');
         if (!navbarCollapsible) {
             return;
@@ -20,10 +31,9 @@ window.addEventListener('DOMContentLoaded', event => {
         } else {
             navbarCollapsible.classList.add('navbar-shrink')
         }
-
     };
 
-    // Shrink the navbar 
+    // Shrink the navbar
     navbarShrink();
 
     // Shrink the navbar when page is scrolled
@@ -51,4 +61,74 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     });
 
+    let observer = new IntersectionObserver(animateSkilBars, options);
+    let observerBar = new IntersectionObserver(displayExperienceBar, options);
+
+    observer.observe(document.getElementById("skils"));
+
+    observerBar.observe(document.getElementById("expOdOs"));
+    observerBar.observe(document.getElementById("expOttobock"));
+    observerBar.observe(document.getElementById("expCSGermany"));
+    observerBar.observe(document.getElementById("expCSPorto"));
+    observerBar.observe(document.getElementById("expBitBrain"));
+    observerBar.observe(document.getElementById("expUminho"));
 });
+
+let displayExperienceBar = (entries) => {
+    // intersection triggered on page load - ignore
+    if (barIntersected) {
+        const className = entries[0].target.className;
+        if (!className.includes("fadeIn")) {
+            entries[0].target.className += " fadeIn";
+            entries[0].target.style.opacity = 1;
+        }
+    }
+    // display loading skil bars only once
+    if (barIntersected <= 1) barIntersected++;
+}
+
+let animateBar = (elem, maxWidth, time = 10) => {
+    var width = 0;
+    var id = setInterval(() => {
+        if (width >= maxWidth) {
+            clearInterval(id);
+        } else {
+            width++;
+            elem.style.width = width + "%";
+            elem.innerHTML = width + "%";
+        }
+    }, time);
+}
+
+let animateSkilBars = () => {
+    // intersection triggered on page load - ignore
+    if (intersected == 1) {
+        animateBar(document.getElementById("skilsTypeScript"), 97);
+        animateBar(document.getElementById("skilsCCpp"), 95);
+        animateBar(document.getElementById("skilsCsh"), 92);
+        animateBar(document.getElementById("skilsDocker"), 90);
+        animateBar(document.getElementById("skilsPython"), 93);
+        animateBar(document.getElementById("skilsGit"), 97);
+        animateBar(document.getElementById("skilsGraphQl"), 85);
+        animateBar(document.getElementById("skilsAws"), 80);
+    }
+
+    // display loading skil bars only once
+    if (intersected <= 1) intersected++;
+}
+
+// Fade navbar brand when moving up
+const fade = (element, opacity) => {
+	element.style.opacity = opacity;
+    if (opacity) element.style.removeProperty("display");
+    else element.style.display = "none";
+}
+
+window.onscroll = () => {
+    const y = window.scrollY;
+    const r = (y - scrollLimit + scrollRange) / (2 * scrollRange);
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+    const s = clamp(r, 0, 1);
+
+    fade(mainLink, s);
+};
