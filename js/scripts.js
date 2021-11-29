@@ -10,26 +10,26 @@ mainLink.style.display = "none";
 const scrollLimit = 550;
 const scrollRange = 100;
 
-let intersected = (window.location.hash === '#skils');
-let barIntersected = (window.location.hash === '#experience');
+let intersected = window.location.hash === "#skils";
+let barIntersected = window.location.hash === "#experience";
 
 let options = {
-    root: document.querySelector('#scrollArea'),
-    rootMargin: '0px',
-    threshold: 1.0
-}
+    root: document.querySelector("#scrollArea"),
+    rootMargin: "0px",
+    threshold: 1.0,
+};
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
     // Navbar shrink function
     var navbarShrink = () => {
-        const navbarCollapsible = document.body.querySelector('#mainNav');
+        const navbarCollapsible = document.body.querySelector("#mainNav");
         if (!navbarCollapsible) {
             return;
         }
         if (window.scrollY === 0) {
-            navbarCollapsible.classList.remove('navbar-shrink')
+            navbarCollapsible.classList.remove("navbar-shrink");
         } else {
-            navbarCollapsible.classList.add('navbar-shrink')
+            navbarCollapsible.classList.add("navbar-shrink");
         }
     };
 
@@ -37,32 +37,32 @@ window.addEventListener('DOMContentLoaded', () => {
     navbarShrink();
 
     // Shrink the navbar when page is scrolled
-    document.addEventListener('scroll', navbarShrink);
+    document.addEventListener("scroll", navbarShrink);
 
     // Activate Bootstrap scrollspy on the main nav element
-    const mainNav = document.body.querySelector('#mainNav');
+    const mainNav = document.body.querySelector("#mainNav");
     if (mainNav) {
         new bootstrap.ScrollSpy(document.body, {
-            target: '#mainNav',
+            target: "#mainNav",
             offset: 72,
         });
-    };
+    }
 
     // Collapse responsive navbar when toggler is visible
-    const navbarToggler = document.body.querySelector('.navbar-toggler');
+    const navbarToggler = document.body.querySelector(".navbar-toggler");
     const responsiveNavItems = [].slice.call(
-        document.querySelectorAll('#navbarResponsive .nav-link')
+        document.querySelectorAll("#navbarResponsive .nav-link")
     );
     responsiveNavItems.map(function (responsiveNavItem) {
-        responsiveNavItem.addEventListener('click', () => {
-            if (window.getComputedStyle(navbarToggler).display !== 'none') {
+        responsiveNavItem.addEventListener("click", () => {
+            if (window.getComputedStyle(navbarToggler).display !== "none") {
                 navbarToggler.click();
             }
         });
     });
 
-    let observer = new IntersectionObserver(animateSkilBars, options);
-    let observerBar = new IntersectionObserver(displayExperienceBar, options);
+    const observer = new IntersectionObserver(animateSkilBars, options);
+    const observerBar = new IntersectionObserver(displayExperienceBar, options);
 
     observer.observe(document.getElementById("skils"));
 
@@ -85,7 +85,7 @@ let displayExperienceBar = (entries) => {
     }
     // display loading skil bars only once
     if (barIntersected <= 1) barIntersected++;
-}
+};
 
 let animateBar = (elem, maxWidth, time = 10) => {
     var width = 0;
@@ -98,7 +98,7 @@ let animateBar = (elem, maxWidth, time = 10) => {
             elem.innerHTML = width + "%";
         }
     }, time);
-}
+};
 
 let animateSkilBars = () => {
     // intersection triggered on page load - ignore
@@ -115,14 +115,14 @@ let animateSkilBars = () => {
 
     // display loading skil bars only once
     if (intersected <= 1) intersected++;
-}
+};
 
 // Fade navbar brand when moving up
 const fade = (element, opacity) => {
-	element.style.opacity = opacity;
+    element.style.opacity = opacity;
     if (opacity) element.style.removeProperty("display");
     else element.style.display = "none";
-}
+};
 
 window.onscroll = () => {
     const y = window.scrollY;
@@ -131,4 +131,36 @@ window.onscroll = () => {
     const s = clamp(r, 0, 1);
 
     fade(mainLink, s);
+};
+
+let submitContactForm = () => {
+    const form = document.getElementById("contactForm");
+    form.classList.add('was-validated');
+
+    if (form.checkValidity()) {
+        form.classList.remove('was-validated');
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+        const data = {
+            name: name,
+            email: email,
+            message: message,
+        };
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://ov6s2qc9d6.execute-api.eu-west-3.amazonaws.com/live", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.
+        xhr.send(JSON.stringify(data));
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const submitSuccessMessage = document.getElementById("submitSuccessMessage");
+                const submitButton = document.getElementById("submitButton");
+                submitSuccessMessage.classList.remove = ("d-none");
+                submitButton.classList.add = ("d-none");
+            } else {
+                alert("Sorry, there was an error sending your message. Please try again later.");
+            }
+        };
+    }
 };
