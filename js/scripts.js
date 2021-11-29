@@ -150,7 +150,6 @@ let submitContactForm = () => {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "https://ov6s2qc9d6.execute-api.eu-west-3.amazonaws.com/live", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.
         xhr.send(JSON.stringify(data));
         xhr.onload = () => {
             if (xhr.status === 200) {
